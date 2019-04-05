@@ -24,12 +24,12 @@ def saveNSRecords(domain_name, ip_address, name_servers):
         name_sapce_obj.save()
         ip_object.ns_records.add(name_sapce_obj)
 
-def saveARecords(domain_name, hostnames):
-    ip_object = IPRecord.objects.all().filter(domain_name = domain_name)
-    for host in hostnames:
-        host_obj = ARecord(hostname = host['host'], ip_address = host['ip_address'])
-        host_obj.save()
-        ip_object.a_records.add(host_obj)
+def saveARecord(domain_name, host_ip):
+    ip_object = IPRecord.objects.get(domain_name = domain_name)
+    host_obj = ARecord(hostname = domain_name, ip_address = host_ip)
+    host_obj.save()
+    ip_object.a_record = host_obj
+    ip_object.save()
 
 
 def add_domain(request):
@@ -48,7 +48,7 @@ def add_domain(request):
                         else:
                             corresponding_records = inDepthLookup(domain_name)
                             saveNSRecords(domain_name, results['ipAddress'], corresponding_records[0])
-                            saveARecords(domain_name, corresponding_records[1])
+                            saveARecord(domain_name, corresponding_records[1])
                             displayMessage(request, "S", "The domain name has been sent for processing.")
                 else:
                     displayMessage(request, "E", "There was an error performing the lookup. Please re-enter the domain name.")

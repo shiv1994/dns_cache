@@ -6,15 +6,12 @@ def inDepthLookup(domain_name):
     resolver.nameservers = ['8.8.8.8']
     ns_answers = resolver.query(domain_name, 'NS')
     name_servers = []
-    a_answers = resolver.query(domain_name, 'A')
-    hostnames = []
+    a_answer = resolver.query(domain_name, 'A')
     for rr in ns_answers:
         name_server = rr.target
         ip_address = dns.resolver.query(rr.target, 'A')[0].address
         name_servers.append({'name_server':name_server, 'ip_address':ip_address})
-    for hostname in a_answers:
-        hostnames.append({'host':domain_name, 'ip_address':hostname})
-    return [name_servers, hostnames]
+    return [name_servers, a_answer[0].address]
 
 
 def determineLocalIPAddressCountry(domain_name):

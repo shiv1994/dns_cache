@@ -14,7 +14,7 @@ class IPRecord(models.Model):
     ip_address_resolved = models.GenericIPAddressField()
     timestamp = models.DateTimeField(auto_now_add=True)
     ns_records = models.ManyToManyField(NSRecord)
-    a_records = models.ManyToManyField(ARecord)
+    a_record = models.OneToOneField(ARecord, on_delete=models.CASCADE, blank = True, null = True)
 
 class Stats(models.Model):
     num_transactions = models.IntegerField(default = 0)
