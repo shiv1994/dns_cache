@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import IPRecord, NSRecord, ARecord
 
-# Register your models here.
+admin.site.register(NSRecord)
+admin.site.register(ARecord)
+admin.site.register(IPRecord)
