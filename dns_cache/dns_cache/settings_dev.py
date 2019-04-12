@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'dns_records',
     'widget_tweaks',
     'bootstrap4',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,11 @@ STATICFILES_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# URLS - Important
+
+LOGIN_URL = ""
+
+LOGIN_REDIRECT_URL = "/dns_records/login"
+
+SITE_ID = 1

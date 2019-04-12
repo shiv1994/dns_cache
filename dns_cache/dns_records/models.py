@@ -1,20 +1,21 @@
 from django.db import models
 import datetime
 
+class IPRecord(models.Model):
+    domain_name = models.CharField(max_length = 50, unique = True, blank = False)
+    a_record = models.GenericIPAddressField(blank = False)
+    aaaa_record = models.GenericIPAddressField(blank = True, null = True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 class NSRecord(models.Model):
     ns_name = models.CharField(max_length = 50, unique = True, blank = False)
     ns_address = models.GenericIPAddressField()
+    ip_record = models.ForeignKey(IPRecord, on_delete=models.CASCADE, related_name='ns_records')
 
-class ARecord(models.Model):
-    hostname = models.CharField(max_length = 50, unique = True, blank = False)
-    ip_address = models.GenericIPAddressField()
-
-class IPRecord(models.Model):
-    domain_name = models.CharField(max_length = 50, unique = True, blank = False)
-    ip_address_resolved = models.GenericIPAddressField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    ns_records = models.ManyToManyField(NSRecord)
-    a_record = models.OneToOneField(ARecord, on_delete=models.CASCADE, blank = True, null = True)
+class MXRecord(models.Model):
+    mx_priority = models.IntegerField(blank = False)
+    mx_address = models.GenericIPAddressField()
+    ip_record = models.ForeignKey(IPRecord, on_delete=models.CASCADE, related_name='mx_records')
 
 class Stats(models.Model):
     num_transactions = models.IntegerField(default = 0)

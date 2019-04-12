@@ -266,14 +266,10 @@ body {
   box-sizing: border-box;
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: whitesmoke;
+  background-color: #007bff;
   text-transform: uppercase;
-  border: none;
-  background-image: -moz-linear-gradient(to left, #74ebd5, #9face6);
-  background-image: -ms-linear-gradient(to left, #74ebd5, #9face6);
-  background-image: -o-linear-gradient(to left, #74ebd5, #9face6);
-  background-image: -webkit-linear-gradient(to left, #74ebd5, #9face6);
-  background-image: linear-gradient(to left, #74ebd5, #9face6); }
+}
 
 input[type=checkbox]:not(old) {
   width: 2em;
@@ -362,12 +358,10 @@ input[type=checkbox]:not(old):checked + label > span:before {
 /*# sourceMappingURL=style.css.map */
 
 #main-logo {
-  border: 1px solid #ddd;
-  width: 250px;
+  width: 275px;
   display: block;
   margin-left: auto;
   margin-right: auto;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: white;
   margin-bottom: 25px;
   -webkit-animation: fadein 4s; /* Safari, Chrome and Opera > 12.1 */

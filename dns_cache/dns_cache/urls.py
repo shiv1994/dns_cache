@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from dns_records.views import add_domain
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', add_domain, name='add-domain'),
     path('records/', include('dns_records.urls')),
+    path('captcha/', include('captcha.urls')),
 ]

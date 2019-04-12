@@ -3,5 +3,8 @@ from . import views
 
 app_name = 'dns_records'
 urlpatterns = [
-    path('add_domain', views.add_domain, name='add-domain'),
+    path('login', views.login_view, name='login'),
+    path('logout', views.logout_view, name='logout'),
+    path('dump', views.dump, name='dump-system'),
+    path('main', views.main, name='main')
 ] 

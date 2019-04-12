@@ -6,12 +6,20 @@ def inDepthLookup(domain_name):
     resolver.nameservers = ['8.8.8.8']
     ns_answers = resolver.query(domain_name, 'NS')
     name_servers = []
+    mx_answers = []
     a_answer = resolver.query(domain_name, 'A')
     for rr in ns_answers:
         name_server = rr.target
         ip_address = dns.resolver.query(rr.target, 'A')[0].address
         name_servers.append({'name_server':name_server, 'ip_address':ip_address})
-    return [name_servers, a_answer[0].address]
+    for mx in resolver.query(domain_name, 'MX'):
+        mx_answers.append({'priority':mx.preference, 'host':mx.exchange})
+    try:
+        ipv6 = resolver.query(domain_name, 'AAAA')
+    except:
+        ipv6 = None
+    # Returns nameservers, ipv4 address, mx servers, ipv6 address ...
+    return [name_servers, a_answer[0].address, mx_answers, ipv6]
 
 
 def determineLocalIPAddressCountry(domain_name):
@@ -25,6 +33,5 @@ def determineLocalIPAddressCountry(domain_name):
         return json_response
     else:
         return None
-
 
 # determineLocalIPAddress('sta.uwi.edu')
