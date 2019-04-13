@@ -118,3 +118,53 @@ def logout_view(request):
 @login_required
 def main(request):
     return render(request, 'dns_records/main.html', {})
+
+@login_required
+def rebuild_db(request):
+    # Get and iterate all IP records.
+    mx_records_altered = 0
+    ns_records_altered = 0
+    ip_records = IPRecord.objects.all()
+    for ip_rec in ip_records:
+        # Resolve to all required fields.
+        corresponding_records = inDepthLookup(ip_rec.domain_name)
+        ip_rec.a_record = corresponding_records[1]
+        ip_rec.aaaa_record = corresponding_records[3]
+        ip_rec.save()
+        # Remove old MX entries and updte new ones. Use corresponding_records[2]
+        mx_records = MXRecord.objects.all().filter(ip_record = ip_rec)
+        for mx_record_old in mx_records:
+            exists = False
+            for mx_record_new in corresponding_records[2]:
+                if str(mx_record_old.mx_address) == str(mx_record_new['host']):
+                    exists = True
+                    break
+            if not exists:
+                mx_records_altered += 1
+                mx_record_old.delete()
+                mx_obj = MXRecord(mx_priority = mx_record_new['priority'] , mx_address = mx_record_new['host'], ip_record= ip_rec)
+                mx_obj.save()
+        # Remove old NS entries and updte new ones. Use corresponding_records[0]
+        ns_records = NSRecord.objects.all().filter(ip_record = ip_rec)
+        for ns_record_old in ns_records:
+            exists = False
+            for ns_record_new in corresponding_records[0]:
+                if ns_record_old.ns_name == str(ns_record_new['name_server']) and str(ns_record_old.ns_address) == str(ns_record_new['ip_address']):
+                    exists = True
+                    break
+            if not exists:
+                ns_records_altered += 1
+                ns_record_old.delete()
+                ns_obj = NSRecord(ns_name = ns_record_new['name_server'], ns_address = ns_record_new['ip_address'], ip_record = ip_rec)
+                ns_obj.save()
+        return_message = "Cache Rebuild Complete! " + str(ns_records_altered) + " NS records altered and " + str(mx_records_altered) + " MX records altered."
+    messages.add_message(request, messages.SUCCESS, return_message)
+    return redirect('dns_records:main')
+        
+
+
+        
+
+
+
+
