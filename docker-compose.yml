@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  djangoapp:
+  django_dns:
     build: .
     environment:
       - IPINFODB_API_KEY=FILL_IN
@@ -9,5 +9,5 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - .://usr/djangoapp/code
-      - /dns_cache/static/:/usr/djangoapp/code/dns_cache/static
+      - .://usr/django_dns/code
+      - static_volume:/usr/django_dns/code/dns_cache/static
