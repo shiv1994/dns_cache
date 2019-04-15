@@ -7,7 +7,7 @@ services:
       - IPINFODB_API_KEY=FILL_IN
       - DJANGO_SECRET_KEY=FILL_IN
     ports:
-      - 8000:8000
+      - 7999:7999
     volumes:
       - .://usr/django_dns/code
       - static_volume:/usr/django_dns/code/dns_cache/static
