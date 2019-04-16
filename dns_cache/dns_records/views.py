@@ -63,7 +63,7 @@ def add_domain(request):
                             save_mx_records(domain_name, corresponding_records[2], ip_object)
                             display_message(request, "S", "The domain name has been sent for processing.")
                     else:
-                        display_message(request, "E", "This domain does not belong to Trinidad.")
+                        display_message(request, "E", "This domain does not belong to Trinidad."+str(results))
                 else:
                     display_message(request, "E", "There was an error performing the lookup. Please re-enter the "
                                                   "domain name.")

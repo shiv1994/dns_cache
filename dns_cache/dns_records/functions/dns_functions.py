@@ -26,7 +26,7 @@ def determineLocalIPAddressCountry(domain_name):
     key = os.environ.get('IPINFODB_API_KEY')
     headers = {'content-type': 'application/json'}
     url = "http://api.ipinfodb.com/v3/ip-country/"
-    params = {'key':key, 'format':'json'}
+    params = {'key':key, 'format':'json', 'ip':domain_name}
     if key is not None:
         response = requests.post(url, params = params, headers=headers)
         json_response = json.loads(response.text)

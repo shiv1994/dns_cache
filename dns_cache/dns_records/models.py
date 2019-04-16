@@ -14,7 +14,7 @@ class NSRecord(models.Model):
 
 class MXRecord(models.Model):
     mx_priority = models.IntegerField(blank = False)
-    mx_address = models.GenericIPAddressField()
+    mx_address = models.CharField(max_length = 50, blank = False)
     ip_record = models.ForeignKey(IPRecord, on_delete=models.CASCADE, related_name='mx_records')
 
 class Stats(models.Model):
