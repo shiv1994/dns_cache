@@ -5,8 +5,8 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_dev')
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_prod')
+    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_dev')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_prod')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

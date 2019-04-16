@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['dnscache.lab.tt']
 
@@ -59,8 +59,12 @@ WSGI_APPLICATION = 'dns_cache.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dns_cache_db',
+        'USER': 'postgres',
+        'PASSWORD': 'pass',
+        'HOST': 'postgres_database1_1',
+        'PORT': 5432,
     }
 }
 

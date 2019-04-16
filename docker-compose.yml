@@ -11,7 +11,8 @@ services:
     volumes:
       - .://usr/django_dns/code
       - /django_apps/dns_static/static/:/usr/django_dns/code/dns_cache/staticfiles
-      - sqlite_volume:/usr/django_dns/code/dns_cache/
 
-volumes:
-  sqlite_volume:
+networks:
+  default:
+    external:
+      name: postgres_pg_network
