@@ -48,22 +48,19 @@ def add_domain(request):
             domain_name = domain_form.cleaned_data['domain_name']
             results = determineLocalIPAddressCountry(domain_name)
             if results is not None:
-                print("We have results!")
                 if results['statusCode'] == "OK":
-                    print("We have more results!")
                     if results['countryCode'] == "TT":
                         domain_name_exists = IPRecord.objects.filter(domain_name = domain_name).exists()
                         if domain_name_exists:
                             display_message(request, "I", "The domain name already exists within the system.")
                         else:
-                            print("We are now going to fetch corresponding records!")
                             corresponding_records = inDepthLookup(domain_name)
                             ip_object = save_ip_record(domain_name, corresponding_records[1], corresponding_records[3])
                             save_ns_records(domain_name, results['ipAddress'], corresponding_records[0], ip_object)
                             save_mx_records(domain_name, corresponding_records[2], ip_object)
-                            display_message(request, "S", "The domain name has been sent for processing.")
+                            display_message(request, "S", domain_name+" has been sent for processing.")
                     else:
-                        display_message(request, "E", "This domain does not belong to Trinidad."+str(results))
+                        display_message(request, "E", "This domain does not belong to Trinidad. Please enter a domain existing within Trinidad.")
                 else:
                     display_message(request, "E", "There was an error performing the lookup. Please re-enter the "
                                                   "domain name.")
@@ -71,7 +68,7 @@ def add_domain(request):
                 display_message(request, "E", "There was an error performing the lookup. Please re-enter the "
                                               "domain name.")
         else:
-            display_message(request, "E", "There was an issue validating the form. Please enter correct data.")
+            display_message(request, "E", "There was an issue validating the form. Please enter correct text from the Captcha.")
         return redirect('add-domain')
     elif request.method == "GET":
         domain_form = DomainForm()

@@ -21,5 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', add_domain, name='add-domain'),
     path('records/', include('dns_records.urls')),
-    path('captcha/', include('captcha.urls')),
 ]

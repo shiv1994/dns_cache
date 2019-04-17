@@ -25,7 +25,7 @@ SECRET_KEY = '-#z@3xz19(djrs#tu0=2bxq=b#$uyel+=un!s91^dmu6d*o+*2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -104,3 +104,5 @@ LOGIN_URL = ""
 LOGIN_REDIRECT_URL = "/dns_records/login"
 
 SITE_ID = 1
+
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
