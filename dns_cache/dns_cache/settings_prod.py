@@ -51,6 +51,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'dns_cache.wsgi.application'
 
 
@@ -68,10 +69,14 @@ DATABASES = {
     }
 }
 
-# Re-Captcha Keys
 
-# RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
-# RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+# Re-Captcha Keys
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
+
+# Re-Captcha Proxy Info
+RECAPTCHA_PROXY = {'http': 'http://127.0.0.1:7999', 'https': 'https://127.0.0.1:7999'}
 
 
 # Password validation
