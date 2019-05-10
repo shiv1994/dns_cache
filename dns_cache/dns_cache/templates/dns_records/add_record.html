@@ -37,30 +37,44 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
-                        <p> This is a proposed system for the caching of domains respective to Trinidad & Tobago.</p>
+                        <p> This system facilitates the caching of local IP Addresses.</p>
                         <hr>
-                        <form method="POST" id="signup-form" class="form">
+
+                        <form method="POST" class="form" id="domain-form">
                             {% csrf_token %}
-                            {% for hidden_field in domain_form.hidden_fields %}
-                                {{ hidden_field }}
+                            {{ domain_formset.management_form }}
+                            {% for form in domain_formset %}
+
+                                <div class="col-md-7">
+                                    {% for field in form.visible_fields %}
+                                        <div class="form-row">
+                                            {% render_field field class="form-control" %}
+                                            {% if field.help_text %}
+                                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                                            {% endif %}
+                                            <hr>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             {% endfor %}
-                            <div class="col-md-12">
-                                {% for field in domain_form.visible_fields %}
-                                    <div class="form-group">
-                                        <strong>{{ field.label_tag }}</strong>
-                                        {% render_field field class="form-input" %}
-                                        {% if field.help_text %}
-                                            <small class="form-text text-muted">{{ field.help_text }}</small>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                                <button type="submit" class="form-submit">Send Domain Name For Processing</button>
-                            </div>
+                            <hr>
+                            {{captcha_form.as_p}}
+                            <hr>
+                            <button type="submit" class="form-submit btn btn-block btn-primary">Send Domain Name For Processing</button>
                         </form>
                     </div>
                 </div>
             </section>
         </div>
+        <script src="{% static 'js/jquery.formset.js' %}"></script>
+        <script type="text/javascript">
+
+            $(function() {
+              $('.form-row').formset({
+                prefix: '{{ domain_formset.prefix }}'
+              });
+            })
+        </script>
     </body>
 <!-- This templates was made by Colorlib (https://colorlib.com) -->
 <!-- background image obtained free from: https://unsplash.com/photos/Q1p7bh3SHj8 -->

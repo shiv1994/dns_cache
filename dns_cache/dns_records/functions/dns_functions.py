@@ -4,22 +4,32 @@ import dns.resolver, dns.zone, dns.query
 def inDepthLookup(domain_name):
     resolver = dns.resolver.Resolver(configure=False)
     resolver.nameservers = ['8.8.8.8']
-    ns_answers = resolver.query(domain_name, 'NS')
     name_servers = []
     mx_answers = []
-    a_answer = resolver.query(domain_name, 'A')
-    for rr in ns_answers:
-        name_server = rr.target
-        ip_address = dns.resolver.query(rr.target, 'A')[0].address
-        name_servers.append({'name_server':name_server, 'ip_address':ip_address})
-    for mx in resolver.query(domain_name, 'MX'):
-        mx_answers.append({'priority':mx.preference, 'host':mx.exchange})
+    try:
+        ns_answers = resolver.query(domain_name, 'NS')
+        for rr in ns_answers:
+            name_server = rr.target
+            ip_address = dns.resolver.query(rr.target, 'A')[0].address
+            name_servers.append({'name_server':name_server, 'ip_address':ip_address})
+    except:
+        name_servers = None
+    try:
+        a_answers = resolver.query(domain_name, 'A')
+    except:
+        a_answers = None
+    try:
+        mx_ans = resolver.query(domain_name, 'MX')
+        for mx in mx_ans:
+            mx_answers.append({'priority':mx.preference, 'host':mx.exchange})
+    except:
+        mx_answers = None
     try:
         ipv6 = resolver.query(domain_name, 'AAAA')
     except:
         ipv6 = None
     # Returns nameservers, ipv4 address, mx servers, ipv6 address ...
-    return [name_servers, a_answer[0].address, mx_answers, ipv6]
+    return [name_servers, a_answers, mx_answers, ipv6]
 
 
 def determineLocalIPAddressCountry(domain_name):
