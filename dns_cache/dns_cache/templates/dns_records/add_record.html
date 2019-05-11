@@ -45,7 +45,7 @@
                             {{ domain_formset.management_form }}
                             {% for form in domain_formset %}
 
-                                <div class="col-md-7">
+                                <div class="col-md-12">
                                     {% for field in form.visible_fields %}
                                         <div class="form-row">
                                             {% render_field field class="form-control" %}

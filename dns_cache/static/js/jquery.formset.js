@@ -194,21 +194,23 @@
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $($(this).parents('tr.' + options.formCssClass + '-add').get(0) || this)
                     delCssSelector = options.deleteCssClass.trim().replace(/\s+/g, '.');
-                applyExtraClasses(row, formCount);
-                row.insertBefore(buttonRow).show();
-                row.find(childElementSelector).each(function() {
-                    updateElementIndex($(this), options.prefix, formCount);
-                });
-                totalForms.val(formCount + 1);
-                // Check if we're above the minimum allowed number of forms -> show all delete link(s)
-                if (showDeleteLinks()){
-                    $('a.' + delCssSelector).each(function(){$(this).show();});
+                if (formCount <5){
+                    applyExtraClasses(row, formCount);
+                    row.insertBefore(buttonRow).show();
+                    row.find(childElementSelector).each(function() {
+                        updateElementIndex($(this), options.prefix, formCount);
+                    });
+                    totalForms.val(formCount + 1);
+                    // Check if we're above the minimum allowed number of forms -> show all delete link(s)
+                    if (showDeleteLinks()){
+                        $('a.' + delCssSelector).each(function(){$(this).show();});
+                    }
+                    // Check if we've exceeded the maximum allowed number of forms:
+                    if (!showAddButton()) buttonRow.hide();
+                    // If a post-add callback was supplied, call it with the added form:
+                    if (options.added) options.added(row);
+                    return false;
                 }
-                // Check if we've exceeded the maximum allowed number of forms:
-                if (!showAddButton()) buttonRow.hide();
-                // If a post-add callback was supplied, call it with the added form:
-                if (options.added) options.added(row);
-                return false;
             });
         }
 

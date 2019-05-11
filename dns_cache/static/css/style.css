@@ -406,5 +406,9 @@ input[type=checkbox]:not(old):checked + label > span:before {
 }
 
 .form-row{
-  padding-bottom: 1em
+  padding-bottom: 1em;
+}
+
+.delete-row{
+  margin-top: 3px;
 }
