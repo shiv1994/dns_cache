@@ -94,7 +94,7 @@ def add_domain(request):
             else:
                 existing_domain_names = existing_domain_names[:len(existing_domain_names)-2] + "."
                 invalid_domain_names = invalid_domain_names[:len(invalid_domain_names)-2] + "."
-                message = str(num_domains_submitted) + " out of " + str(num_domains_total) + " domains have been submitted. The following domain(s) exist already: " +  existing_domain_names + ". The following domain(s) do not belong to TT / exist: " +  invalid_domain_names
+                message = str(num_domains_submitted) + " out of " + str(num_domains_total) + " domains have been submitted. The following domain(s) exist already: " +  existing_domain_names + ". The following domain(s) are invalid or do not reside within Trinidad and Tobago: " +  invalid_domain_names
                 display_message(request, "I", message)
                 return redirect('add-domain')
         elif not captcha_form.is_valid():

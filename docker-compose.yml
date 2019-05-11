@@ -4,10 +4,10 @@ services:
   django_dns:
     build: .
     environment:
-      - IPINFODB_API_KEY=Yo
-      - DJANGO_SECRET_KEY=Yo
-      - RECAPTCHA_PUBLIC_KEY=Yo
-      - RECAPTCHA_PRIVATE_KEY=Yo
+      - IPINFODB_API_KEY=
+      - DJANGO_SECRET_KEY=
+      - RECAPTCHA_PUBLIC_KEY=
+      - RECAPTCHA_PRIVATE_KEY=
     ports:
       - 7999:7999
     volumes:

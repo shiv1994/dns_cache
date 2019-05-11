@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['dnscache.lab.tt']
+ALLOWED_HOSTS = ['dnscache.lab.tt','0.0.0.0']
 
 # Application definition
 
@@ -76,8 +76,9 @@ RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
 
 # Re-Captcha Proxy Info
-RECAPTCHA_PROXY = {'http': 'http://127.0.0.1:7999', 'https': 'https://127.0.0.1:7999'}
+# RECAPTCHA_PROXY = {'http': 'http://127.0.0.1:7999', 'https': 'https://127.0.0.1:7999'}
 
+RECAPTCHA_DOMAIN = 'www.recaptcha.net'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
