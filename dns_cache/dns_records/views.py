@@ -60,6 +60,8 @@ def add_domain(request):
             num_domains_submitted = 0
             num_domains_total = 0
             num_domains_exist = 0
+            num_domains_invalid = 0
+            submitted_domain_names =""
             existing_domain_names = ""
             invalid_domain_names = ""
             index = -1
@@ -83,18 +85,33 @@ def add_domain(request):
                                     save_ip_records(domain_object, corresponding_records[3], IPRecord.ipv6)
                                     save_ns_records(domain_object, corresponding_records[0])
                                     save_mx_records(domain_object, corresponding_records[2])
+                                    submitted_domain_names += domain_name + ", "
                                     num_domains_submitted += 1
                             else:
                                 invalid_domain_names += domain_name + ", "
+                                num_domains_invalid += 1
                         else:
                             invalid_domain_names += domain_name + ", "
+                            num_domains_invalid += 1
             if num_domains_submitted == num_domains_total:
-                display_message(request, "S", "All domains submitted successfully.")
+                display_message(request, "S", "All domains have been submitted successfully.")
                 return redirect('add-domain')
             else:
                 existing_domain_names = existing_domain_names[:len(existing_domain_names)-2] + "."
                 invalid_domain_names = invalid_domain_names[:len(invalid_domain_names)-2] + "."
-                message = str(num_domains_submitted) + " out of " + str(num_domains_total) + " domains have been submitted. The following domain(s) exist already: " +  existing_domain_names + ". The following domain(s) are invalid or do not reside within Trinidad and Tobago: " +  invalid_domain_names
+                submitted_domain_names = submitted_domain_names[:len(invalid_domain_names)-2] + "."
+                message = ""
+                if num_domains_submitted == 0:
+                    message += "No domains have been submitted. "
+                else:
+                    if num_domains_total == num_domains_submitted:
+                        message += "All domains have been submitted: " + submitted_domain_names + " "
+                    else:
+                        message += "Only the following domains have been submitted: " + submitted_domain_names + " "
+                if num_domains_exist != 0:
+                    message += "The following domains exist in the system already: " + existing_domain_names + " "
+                if num_domains_invalid != 0:
+                    message += "The following domains are either invalid or do not reside within TT: " + invalid_domain_names + " "
                 display_message(request, "I", message)
                 return redirect('add-domain')
         elif not captcha_form.is_valid():
