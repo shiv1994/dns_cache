@@ -53,76 +53,64 @@ def save_mx_records(domain_object, mx_records):
 def add_domain(request):
     template_name = "dns_records/add_record.html"
     if request.method == "POST":
-        DomainFormSet = formset_factory(DomainForm)
-        domain_formset = DomainFormSet(request.POST, prefix='domain-forms')
+        domain_form = DomainForm(request.POST)
         captcha_form = CaptchaForm(request.POST)
-        if domain_formset.is_valid() and captcha_form.is_valid():
+        domain_name = ""
+        if domain_form.is_valid() and captcha_form.is_valid():
             num_domains_submitted = 0
-            num_domains_total = 0
             num_domains_exist = 0
-            num_domains_invalid = 0
-            submitted_domain_names =""
-            existing_domain_names = ""
-            invalid_domain_names = ""
-            index = -1
-            for domain_form in domain_formset:
-                index += 1
-                num_domains_total += 1
-                if 'domain_name' in domain_form.cleaned_data:
-                    domain_name = domain_form.cleaned_data['domain_name']
-                    results = determineLocalIPAddressCountry(domain_name)
-                    if results is not None:
-                        if results['statusCode'] == "OK":
-                            if results['countryCode'] == "TT":
-                                domain_name_exists = DomainRecord.objects.filter(domain_name = domain_name).exists()
-                                if domain_name_exists:
-                                    existing_domain_names += domain_name + ", "
-                                    num_domains_exist += 1
-                                else:
-                                    corresponding_records = inDepthLookup(domain_name)
-                                    domain_object = save_domain_record(domain_name)
-                                    save_ip_records(domain_object, corresponding_records[1], IPRecord.ipv4)
-                                    save_ip_records(domain_object, corresponding_records[3], IPRecord.ipv6)
-                                    save_ns_records(domain_object, corresponding_records[0])
-                                    save_mx_records(domain_object, corresponding_records[2])
-                                    submitted_domain_names += domain_name + ", "
-                                    num_domains_submitted += 1
+            num_domains_external = 0
+            num_domains_failed = 0
+            if 'domain_name' in domain_form.cleaned_data:
+                domain_name = domain_form.cleaned_data['domain_name']
+                results = determineLocalIPAddressCountry(domain_name)
+                if results is not None:
+                    if results['statusCode'] == "OK":
+                        if results['countryCode'] == "TT":
+                            domain_name_exists = DomainRecord.objects.filter(domain_name = domain_name).exists()
+                            if domain_name_exists:
+                                num_domains_exist = 1
                             else:
-                                invalid_domain_names += domain_name + ", "
-                                num_domains_invalid += 1
+                                corresponding_records = inDepthLookup(domain_name)
+                                domain_object = save_domain_record(domain_name)
+                                save_ip_records(domain_object, corresponding_records[1], IPRecord.ipv4)
+                                save_ip_records(domain_object, corresponding_records[3], IPRecord.ipv6)
+                                save_ns_records(domain_object, corresponding_records[0])
+                                save_mx_records(domain_object, corresponding_records[2])
+                                num_domains_submitted = 1
                         else:
-                            invalid_domain_names += domain_name + ", "
-                            num_domains_invalid += 1
-            if num_domains_submitted == num_domains_total:
-                display_message(request, "S", "All domains have been submitted successfully.")
+                            num_domains_external = 1
+                    else:
+                        num_domains_failed = 1
+            if num_domains_submitted == 1:
+                display_message(request, "S", domain_name + " has been cached successfully.")
                 return redirect('add-domain')
             else:
-                existing_domain_names = existing_domain_names[:len(existing_domain_names)-2] + "."
-                invalid_domain_names = invalid_domain_names[:len(invalid_domain_names)-2] + "."
-                submitted_domain_names = submitted_domain_names[:len(invalid_domain_names)-2] + "."
-                message = ""
-                if num_domains_submitted == 0:
-                    message += "No domains have been submitted. "
-                else:
-                    if num_domains_total == num_domains_submitted:
-                        message += "All domains have been submitted: " + submitted_domain_names + " "
-                    else:
-                        message += "Only the following domains have been submitted: " + submitted_domain_names + " "
+                message = domain_name + " has not been cached because "
                 if num_domains_exist != 0:
-                    message += "The following domains exist in the system already: " + existing_domain_names + " "
-                if num_domains_invalid != 0:
-                    message += "The following domains are either invalid or do not reside within TT: " + invalid_domain_names + " "
+                    message += "it exists in the system already."
+                if num_domains_external != 0:
+                    message += "it does not reside within Trinidad and Tobago."
+                if num_domains_failed !=0:
+                    message += "there was an error performing the resolution."
                 display_message(request, "I", message)
                 return redirect('add-domain')
+        elif not domain_form.is_valid() and not captcha_form.is_valid():
+            display_message(request, "E", "The domain you entered is invalid and the captcha was not successfully verified.")
+            captcha_form = CaptchaForm()
+            return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
+        elif not domain_form.is_valid():
+            display_message(request, "E", "The domain you entered is not valid.")
+            captcha_form = CaptchaForm()
+            return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
         elif not captcha_form.is_valid():
             display_message(request, "E", "The captcha was not successfully verified.")
             captcha_form = CaptchaForm()
-            render(request, template_name, {'domain_formset':domain_formset, 'captcha_form':captcha_form})
+            return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
     elif request.method == "GET":
-        DomainFormSet = formset_factory(DomainForm, extra = 1)
-        domain_formset = DomainFormSet(prefix='domain-forms')
+        domain_form = DomainForm()
         captcha_form = CaptchaForm()
-    return render(request, template_name, {'domain_formset':domain_formset, 'captcha_form':captcha_form})
+        return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
 
 
 @login_required
@@ -244,9 +232,9 @@ def rebuild_db(request):
                 ns_obj = NSRecord(ns_name=ns_record_new['name_server'], ns_address = ns_record_new['ip_address'],
                                   domain_record=domain_rec)
                 ns_obj.save()
-        return_message = "Cache Rebuild Complete! " + str(ns_records_altered) + " NS records altered, " + \
-                         str(mx_records_altered) + " MX records altered and " +  str(ip_records_altered) + " IP records altered."
-        messages.add_message(request, messages.SUCCESS, return_message)
+    return_message = "Cache Rebuild Complete! " + str(ns_records_altered) + " NS records altered, " + \
+                        str(mx_records_altered) + " MX records altered and " +  str(ip_records_altered) + " IP records altered."
+    display_message(request, "S", return_message)
     return redirect('dns_records:main')
         
 

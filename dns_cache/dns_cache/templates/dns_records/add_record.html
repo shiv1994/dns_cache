@@ -39,42 +39,28 @@
                         {% endif %}
                         <p> This system facilitates the caching of DNS records for domains within Trinidad & Tobago.</p>
                         <hr>
-
                         <form method="POST" class="form" id="domain-form">
                             {% csrf_token %}
-                            {{ domain_formset.management_form }}
-                            {% for form in domain_formset %}
-
-                                <div class="col-md-12">
-                                    {% for field in form.visible_fields %}
-                                        <div class="form-row">
-                                            {% render_field field class="form-control" %}
-                                            {% if field.help_text %}
-                                                <small class="form-text text-muted">{{ field.help_text }}</small>
-                                            {% endif %}
-                                            <hr>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
+                            <div class="col-md-12">
+                                {% for field in domain_form.visible_fields %}
+                                    <div class="form-row">
+                                        {% render_field field class="form-control" %}
+                                        {% if field.help_text %}
+                                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                                        {% endif %}
+                                        <hr>
+                                    </div>
+                                {% endfor %}
+                            </div>
                             <hr>
                             {{captcha_form.as_p}}
                             <hr>
-                            <button type="submit" class="form-submit btn btn-block btn-primary">Send Domain Name(s) For Processing</button>
+                            <button type="submit" class="form-submit btn btn-block btn-primary">Send Domain Name For Processing</button>
                         </form>
                     </div>
                 </div>
             </section>
         </div>
-        <script src="{% static 'js/jquery.formset.js' %}"></script>
-        <script type="text/javascript">
-
-            $(function() {
-              $('.form-row').formset({
-                prefix: '{{ domain_formset.prefix }}'
-              });
-            })
-        </script>
     </body>
 <!-- This templates was made by Colorlib (https://colorlib.com) -->
 <!-- background image obtained free from: https://unsplash.com/photos/Q1p7bh3SHj8 -->
