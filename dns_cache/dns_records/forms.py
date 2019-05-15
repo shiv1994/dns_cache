@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 
 class DomainForm(forms.Form):
     domain_name_validator = RegexValidator(r'(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]', 'This is not of the proper domain name format.')
-    domain_name = forms.CharField(required= True, max_length = 50, help_text = "Please enter a valid domain name or IP Address", validators=[domain_name_validator])
+    domain_name = forms.CharField(required= True, max_length = 50, help_text = "Please enter a valid domain name.", validators=[domain_name_validator])
 
 class CaptchaForm(forms.Form):
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)

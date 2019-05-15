@@ -19,7 +19,7 @@ def display_message(request, message_type, message):
         message_type_result = messages.ERROR
     else:
         message_type_result = messages.INFO
-    messages.add_message(request, message_type_result, message)
+    messages.add_message(request, message_type_result, message, extra_tags='safe')
 
 
 def save_domain_record(domain_name):
@@ -49,6 +49,32 @@ def save_mx_records(domain_object, mx_records):
             mx_obj = MXRecord(mx_priority = mx_record['priority'] , mx_address = mx_record['host'], domain_record=domain_object)
             mx_obj.save()
 
+
+def get_ip_records(domain_obj):
+    text = ""
+    ip_records = IPRecord.objects.all().filter(domain_record = domain_obj)
+    for ip_record in ip_records:
+        text += str(ip_record.ip_entry) +", "
+    new_text = text[:len(text)-2]
+    return new_text
+
+
+def get_mx_records(domain_obj):
+    text = ""
+    mx_records = MXRecord.objects.all().filter(domain_record = domain_obj)
+    for mx_record in mx_records:
+        text += str(mx_record.mx_address) + ", "
+    new_text = text[:len(text)-2]
+    return new_text
+
+
+def get_ns_records(domain_obj):
+    text = ""
+    ns_records = NSRecord.objects.all().filter(domain_record = domain_obj)
+    for ns_record in ns_records:
+        text += str(ns_record.ns_address) + ", "
+    new_text = text[:len(text)-2]
+    return new_text
 
 def add_domain(request):
     template_name = "dns_records/add_record.html"
@@ -83,28 +109,35 @@ def add_domain(request):
                     else:
                         num_domains_failed = 1
             if num_domains_submitted == 1:
-                display_message(request, "S", domain_name + " has been cached successfully.")
+                ip_mappings = get_ip_records(domain_object)
+                mx_mappings = get_mx_records(domain_object)
+                ns_mappings = get_ns_records(domain_object)
+                display_message(request, "S", domain_name + " has been cached successfully. <br>A records: "+ip_mappings+ ".<br>MX records: " + mx_mappings + ".<br>NS records: " + ns_mappings +".")
                 return redirect('add-domain')
             else:
                 message = domain_name + " has not been cached because "
                 if num_domains_exist != 0:
-                    message += "it exists in the system already."
+                    domain_object = DomainRecord.objects.get(domain_name = domain_name)
+                    ip_mappings = get_ip_records(domain_object)
+                    mx_mappings = get_mx_records(domain_object)
+                    ns_mappings = get_ns_records(domain_object)
+                    message += "it exists in the system already.<br>A records: "+ip_mappings+ ".<br>MX records: " + mx_mappings + ".<br>NS records: " + ns_mappings +"."
                 if num_domains_external != 0:
-                    message += "it does not reside within Trinidad and Tobago."
+                    message += "no local IP mappings exist."
                 if num_domains_failed !=0:
-                    message += "there was an error performing the resolution."
+                    message += "the domain is invalid."
                 display_message(request, "I", message)
                 return redirect('add-domain')
         elif not domain_form.is_valid() and not captcha_form.is_valid():
-            display_message(request, "E", "The domain you entered is invalid and the captcha was not successfully verified.")
+            display_message(request, "E", "You entered an invalid domain and the captcha was not successfully verified.")
             captcha_form = CaptchaForm()
             return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
         elif not domain_form.is_valid():
-            display_message(request, "E", "The domain you entered is not valid.")
+            display_message(request, "E", "You entered an invalid domain format.")
             captcha_form = CaptchaForm()
             return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
         elif not captcha_form.is_valid():
-            display_message(request, "E", "The captcha was not successfully verified.")
+            display_message(request, "E", "The captcha did not pass verification.")
             captcha_form = CaptchaForm()
             return render(request, template_name, {'domain_form':domain_form, 'captcha_form':captcha_form})
     elif request.method == "GET":
