@@ -8,7 +8,7 @@ class DomainForm(forms.Form):
     domain_name = forms.CharField(required= True, max_length = 50, help_text = "Please enter a valid domain name.", validators=[domain_name_validator])
 
 class CaptchaForm(forms.Form):
-    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={'style':'transform:scale(0.85);-webkit-transform:scale(0.85);transform-origin:0 0;-webkit-transform-origin:0 0;"'}))
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox(attrs={'style':'transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;"'}))
 
 class LoginForm(forms.Form):
     username = forms.CharField(required= True, max_length = 50, help_text = "Please enter a valid username")
