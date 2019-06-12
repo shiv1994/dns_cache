@@ -76,6 +76,7 @@ def get_ns_records(domain_obj):
     new_text = text[:len(text)-2]
     return new_text
 
+
 def add_domain(request):
     template_name = "dns_records/add_record.html"
     if request.method == "POST":
@@ -125,7 +126,7 @@ def add_domain(request):
                 if num_domains_external != 0:
                     message += "no local IP mappings exist."
                 if num_domains_failed !=0:
-                    message += "the domain is invalid."
+                    message += "the domain is not registered."
                 display_message(request, "I", message)
                 return redirect('add-domain')
         elif not domain_form.is_valid() and not captcha_form.is_valid():
