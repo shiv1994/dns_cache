@@ -5,6 +5,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_q',
     'dns_records',
     'widget_tweaks',
     'bootstrap4',
@@ -35,3 +36,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+Q_CLUSTER = {
+    'name': 'dns_cache_queue',
+    'workers': 3,
+    'timeout': 60,
+    'retry': 70,
+    'queue_limit': 50,
+    'mongo': {
+            'host': '0.0.0.0',
+            'port': 27017
+    }
+}

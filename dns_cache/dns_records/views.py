@@ -4,12 +4,13 @@ from django.http import HttpResponse
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
+from django_q.tasks import async_task, result
 
 from .forms import DomainForm, LoginForm, CaptchaForm
 from .models import NSRecord, IPRecord, MXRecord, DomainRecord
 from .functions.dns_functions import determineLocalIPAddressCountry, inDepthLookup
 
-import csv
+import csv, time, asyncio
 
 
 def display_message(request, message_type, message):
@@ -77,6 +78,15 @@ def get_ns_records(domain_obj):
     return new_text
 
 
+def save_all_records_async(domain_name):
+    corresponding_records = inDepthLookup(domain_name)
+    domain_object = save_domain_record(domain_name)
+    save_ip_records(domain_object, corresponding_records[1], IPRecord.ipv4)
+    save_ip_records(domain_object, corresponding_records[3], IPRecord.ipv6)
+    save_ns_records(domain_object, corresponding_records[0])
+    save_mx_records(domain_object, corresponding_records[2])
+
+
 def add_domain(request):
     template_name = "dns_records/add_record.html"
     if request.method == "POST":
@@ -98,22 +108,19 @@ def add_domain(request):
                             if domain_name_exists:
                                 num_domains_exist = 1
                             else:
-                                corresponding_records = inDepthLookup(domain_name)
-                                domain_object = save_domain_record(domain_name)
-                                save_ip_records(domain_object, corresponding_records[1], IPRecord.ipv4)
-                                save_ip_records(domain_object, corresponding_records[3], IPRecord.ipv6)
-                                save_ns_records(domain_object, corresponding_records[0])
-                                save_mx_records(domain_object, corresponding_records[2])
+                                async_task(save_all_records_async, domain_name)
                                 num_domains_submitted = 1
                         else:
                             num_domains_external = 1
                     else:
                         num_domains_failed = 1
             if num_domains_submitted == 1:
-                ip_mappings = get_ip_records(domain_object)
-                mx_mappings = get_mx_records(domain_object)
-                ns_mappings = get_ns_records(domain_object)
-                display_message(request, "S", domain_name + " has been cached successfully. <br>A records: "+ip_mappings+ ".<br>MX records: " + mx_mappings + ".<br>NS records: " + ns_mappings +".")
+                # ip_mappings = get_ip_records(domain_object)
+                # mx_mappings = get_mx_records(domain_object)
+                # ns_mappings = get_ns_records(domain_object)
+                # display_message(request, "S", domain_name + " has been cached successfully. <br>A records: "+ip_mappings+ ".<br>MX records: " + mx_mappings + ".<br>NS records: " + ns_mappings +".")
+                display_message(request, "S", domain_name + " has been cached successfully.")
+                print("NON_ASYNC FINISHED")
                 return redirect('add-domain')
             else:
                 message = domain_name + " has not been cached because "

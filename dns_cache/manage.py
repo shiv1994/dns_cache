@@ -5,8 +5,13 @@ import sys
 
 
 def main():
-    # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_dev')
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_prod')
+    env_type = os.environ.get('env', "local")
+    if env_type == "local":
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_dev')
+    elif env_type == "production":
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dns_cache.settings_prod')
+    else:
+        print("Invalid configuration ...")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
