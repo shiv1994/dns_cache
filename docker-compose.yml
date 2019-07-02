@@ -4,8 +4,10 @@ services:
   mongo:
     container_name: mongo
     image: mongo
+    command: [--auth]
     environment:
-      - MONGO_INITDB_DATABASE=dns_cache_queue
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
     ports:
       - 27017:27017
 
@@ -18,6 +20,8 @@ services:
       - DJANGO_SECRET_KEY=
       - RECAPTCHA_PUBLIC_KEY=
       - RECAPTCHA_PRIVATE_KEY=
+      - MONGO_INITDB_ROOT_USERNAME=
+      - MONGO_INITDB_ROOT_PASSWORD=
     ports:
       - 7999:7999
     volumes:

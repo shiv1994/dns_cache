@@ -109,6 +109,7 @@ def add_domain(request):
                                 num_domains_exist = 1
                             else:
                                 async_task(save_all_records_async, domain_name)
+                                # async_task(save_domain_record, domain_name)
                                 num_domains_submitted = 1
                         else:
                             num_domains_external = 1
@@ -120,7 +121,7 @@ def add_domain(request):
                 # ns_mappings = get_ns_records(domain_object)
                 # display_message(request, "S", domain_name + " has been cached successfully. <br>A records: "+ip_mappings+ ".<br>MX records: " + mx_mappings + ".<br>NS records: " + ns_mappings +".")
                 display_message(request, "S", domain_name + " has been cached successfully.")
-                print("NON_ASYNC FINISHED")
+                # print("NON_ASYNC FINISHED")
                 return redirect('add-domain')
             else:
                 message = domain_name + " has not been cached because "
