@@ -8,6 +8,8 @@ WORKDIR /usr/django_dns/code
 
 COPY requirements.txt /usr/django_dns/code
 
+RUN pip install --upgrade pip
+
 # install our dependencies
 RUN pip install -r requirements.txt
 
