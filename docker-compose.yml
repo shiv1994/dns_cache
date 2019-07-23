@@ -1,16 +1,6 @@
 version: '3'
 
 services:
-  mongo:
-    container_name: mongo
-    image: mongo
-    command: [--auth]
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=
-      - MONGO_INITDB_ROOT_PASSWORD=
-    ports:
-      - 27017:27017
-
 # Comment this service when developing locally.
   django_dns:
     build: .
@@ -27,8 +17,6 @@ services:
     volumes:
       - .://usr/django_dns/code
       - /django_apps/dns_static/static/:/usr/django_dns/code/dns_cache/staticfiles
-    depends_on:
-      - mongo
 
 # Comment this network when developing locally.
 networks:

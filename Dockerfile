@@ -21,7 +21,7 @@ EXPOSE 7999
 
 RUN cd dns_cache/ python manage.py migrate
 
-RUN cd dns_cache/ python manage.py qcluster
+# RUN cd dns_cache/ python manage.py qcluster
 
 CMD cp -r dns_cache/static dns_cache/staticfiles && gunicorn --chdir dns_cache --bind :7999 dns_cache.wsgi:application
 

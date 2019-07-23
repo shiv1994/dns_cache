@@ -38,17 +38,3 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-Q_CLUSTER = {
-    'name': 'dns_cache_queue',
-    'workers': 3,
-    'timeout': 60,
-    'retry': 3,
-    'queue_limit': 50,
-    'mongo': {
-            'username':os.environ.get('MONGO_INITDB_ROOT_USERNAME'),
-            'password':os.environ.get('MONGO_INITDB_ROOT_PASSWORD'),
-            'host': '0.0.0.0',
-            'port': 27017
-    }
-}

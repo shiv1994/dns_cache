@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-from .settings_base import INSTALLED_APPS, MIDDLEWARE, AUTH_PASSWORD_VALIDATORS, Q_CLUSTER
+from .settings_base import INSTALLED_APPS, MIDDLEWARE, AUTH_PASSWORD_VALIDATORS
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -106,4 +106,16 @@ SITE_ID = 1
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-Q_CLUSTER = Q_CLUSTER
+Q_CLUSTER = {
+    'name': 'dns_cache_queue',
+    'workers': 3,
+    'timeout': 60,
+    'retry': 3,
+    'queue_limit': 50,
+    'mongo': {
+            'username':'test',
+            'password':'test',
+            'host': '0.0.0.0',
+            'port': 27017
+    }
+}

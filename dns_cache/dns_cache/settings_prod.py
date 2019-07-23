@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-from .settings_base import INSTALLED_APPS, MIDDLEWARE, AUTH_PASSWORD_VALIDATORS, Q_CLUSTER
+from .settings_base import INSTALLED_APPS, MIDDLEWARE, AUTH_PASSWORD_VALIDATORS
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -120,4 +120,17 @@ LOGIN_REDIRECT_URL = "/dns_records/login"
 
 SITE_ID = 1
 
-Q_CLUSTER = Q_CLUSTER
+# Django Q
+Q_CLUSTER = {
+    'name': 'dns_cache_queue',
+    'workers': 3,
+    'timeout': 5,
+    'retry': 3,
+    'queue_limit': 50,
+    'mongo': {
+            'username':os.environ.get('MONGO_INITDB_ROOT_USERNAME'),
+            'password':os.environ.get('MONGO_INITDB_ROOT_PASSWORD'),
+            'host': 'mongo',
+            'port': 27017
+    }
+}
