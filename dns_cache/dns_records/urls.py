@@ -8,4 +8,5 @@ urlpatterns = [
     path('dump', views.dump, name='dump-system'),
     path('main', views.main, name='main'),
     path('rebuild', views.rebuild_db, name='rebuild'),
+    path('schedule/rebuild', views.cache_setup, name='automate-rebuild'),
 ] 
