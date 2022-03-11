@@ -11,7 +11,7 @@ dnspython==1.15.0
 dnspython3==1.15.0
 gunicorn==19.9.0
 idna==2.8
-Pillow==6.0.0
+Pillow==9.0.1
 pytz==2018.9
 requests==2.21.0
 six==1.12.0
